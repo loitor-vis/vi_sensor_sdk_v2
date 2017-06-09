@@ -53,14 +53,28 @@ int visensor_img_width();
 int visensor_img_height();
 int visensor_Start_Cameras();
 void visensor_Close_Cameras();
+
 bool visensor_is_leftcam_open();
 bool visensor_is_rightcam_open();
+
+/**
+ * @brief visensor_is_left_img_new Check this function's return value before you wanna use visensor_get_left_latest_img() to get a new image.
+ * @return true if new image is ready
+ *          false if image is not ready
+ */
 bool visensor_is_left_img_new();
+
+/**
+ * @brief visensor_is_right_img_new Check this function's return value before you wanna use visensor_get_right_latest_img() to get a new image.
+ * @return true if new image is ready
+ *          false if image is not ready
+ */
 bool visensor_is_right_img_new();
 
 /**
- * @brief visensor_get_left_latest_img
- * @param img Your image pointer. For OpenCV, you can use cv::Mat im.data.
+ * @brief visensor_get_left_latest_img This function is non-blocking and ALWAYS return the lastest image in buffer!
+ *          Generally, you should check if new image is ready by the function: visensor_is_left_img_new()
+ * @param img Your image pointer. For OpenCV, you can use cv::Mat im, im.data.
  * @param timestamp Timestamp in seconds, but with the precision of microseconds(us).
  * @param imudata (Optional)The pointer to your IMU data pack.
  * @return 0 if success, otherwise failed.
@@ -68,8 +82,9 @@ bool visensor_is_right_img_new();
 int visensor_get_left_latest_img(unsigned char* img, double* timestamp, visensor_imudata* imudata=NULL);
 
 /**
- * @brief visensor_get_left_latest_img
- * @param img Your image pointer. For OpenCV, you can use cv::Mat im.data.
+ * @brief visensor_get_right_latest_img This function is non-blocking and ALWAYS return the lastest image in buffer!
+ *          Generally, you should check if new image is ready by the function: visensor_is_right_img_new()
+ * @param img Your image pointer. For OpenCV, you can use cv::Mat im, im.data.
  * @param timestamp Timestamp in seconds, but with the precision of microseconds(us).
  * @param imudata (Optional)The pointer to your IMU data pack. Generally if you are using stereo camera
  *          and have already got the IMU data with left image, this parameter will be not necessary as it is the same with the left camera.
@@ -77,9 +92,16 @@ int visensor_get_left_latest_img(unsigned char* img, double* timestamp, visensor
  */
 int visensor_get_right_latest_img(unsigned char* img, double* timestamp, visensor_imudata* imudata=NULL);
 
-bool visensor_imu_have_fresh_data();
 /**
- * @brief visensor_get_imudata_latest
+ * @brief visensor_imu_have_fresh_data Check this function's return value before you wanna use visensor_get_imudata_latest() to get new IMU data.
+ * @return true if new IMU data is ready
+ *          false if IMU data is not ready
+ */
+bool visensor_imu_have_fresh_data();
+
+/**
+ * @brief visensor_get_imudata_latest This function is non-blocking and ALWAYS return the lastest imudata in buffer!
+ *          Generally, you should check if new IMU data is ready by the function: visensor_imu_have_fresh_data()
  * @param imudata
  * @return 0 if success
  *         -1 if data is not available
